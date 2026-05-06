@@ -3,604 +3,338 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>八年级数学期中测试（演示）</title>
+<title>机械综合模拟考试</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: #f5f7fa;
-    color: #333;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  /* Header */
-  .header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-  .header h1 { font-size: 1.3em; margin-bottom: 4px; }
-  .header .info { font-size: 0.85em; opacity: 0.9; }
-  .header .timer {
-    display: inline-block;
-    background: rgba(255,255,255,0.2);
-    padding: 6px 16px;
-    border-radius: 20px;
-    margin-top: 8px;
-    font-size: 1.1em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Progress bar */
-  .progress-bar {
-    height: 4px;
-    background: rgba(255,255,255,0.3);
-    margin-top: 12px;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: #ffd700;
-    width: 0%;
-    transition: width 0.3s;
-    border-radius: 2px;
-  }
-
-  /* Start screen */
-  .start-screen {
-    max-width: 500px;
-    margin: 80px auto;
-    padding: 40px 24px;
-    text-align: center;
-  }
-  .start-screen h2 { font-size: 1.5em; margin-bottom: 12px; }
-  .start-screen p { color: #666; margin-bottom: 24px; }
-  .start-btn {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 14px 48px;
-    font-size: 1.1em;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
-  .start-btn:active { transform: scale(0.97); }
-
-  /* Exam content */
-  .exam-container { max-width: 800px; margin: 0 auto; padding: 16px; }
-  .section {
-    background: white;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    padding: 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  }
-  .section-title {
-    font-size: 1.15em;
-    font-weight: 700;
-    color: #667eea;
-    margin-bottom: 4px;
-    border-left: 4px solid #667eea;
-    padding-left: 10px;
-  }
-  .section-desc { font-size: 0.8em; color: #999; margin-bottom: 16px; padding-left: 14px; }
-
-  /* Question */
-  .question {
-    padding: 16px 0;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .question:last-child { border-bottom: none; }
-  .question-header { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
-  .q-num {
-    background: #667eea;
-    color: white;
-    min-width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85em;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-  .q-score { font-size: 0.75em; color: #999; align-self: center; }
-  .q-text {
-    flex: 1;
-    font-size: 0.95em;
-    line-height: 1.7;
-  }
-
-  /* Image in question */
-  .q-image {
-    width: 100%;
-    max-width: 360px;
-    margin: 10px auto;
-    display: block;
-    border-radius: 8px;
-    border: 1px solid #eee;
-  }
-
-  /* Options */
-  .options { margin-top: 12px; }
-  .option {
-    display: flex;
-    align-items: center;
-    padding: 10px 14px;
-    margin: 6px 0;
-    background: #f8f9fc;
-    border: 2px solid transparent;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.92em;
-  }
-  .option:hover { background: #eef0ff; border-color: #c5cae9; }
-  .option.selected { background: #e8eaf6; border-color: #667eea; }
-  .option.correct { background: #e8f5e9; border-color: #4caf50; }
-  .option.wrong { background: #fce4ec; border-color: #f44336; }
-  .option-label {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 0.85em;
-    margin-right: 10px;
-    flex-shrink: 0;
-    transition: background 0.2s;
-  }
-  .option.selected .option-label { background: #667eea; color: white; }
-  .option.correct .option-label { background: #4caf50; color: white; }
-  .option.wrong .option-label { background: #f44336; color: white; }
-
-  /* Text input for fill-in */
-  .fill-input {
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 1em;
-    width: 100%;
-    max-width: 300px;
-    margin-top: 8px;
-    transition: border-color 0.2s;
-  }
-  .fill-input:focus { outline: none; border-color: #667eea; }
-
-  /* Navigation */
-  .nav-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 12px 16px;
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
-    z-index: 100;
-  }
-  .nav-btn {
-    padding: 12px 32px;
-    border: none;
-    border-radius: 25px;
-    font-size: 0.95em;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .nav-btn:active { transform: scale(0.95); }
-  .nav-btn.prev { background: #f0f0f0; color: #666; }
-  .nav-btn.submit { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-  .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  /* Result screen */
-  .result-screen {
-    max-width: 500px;
-    margin: 60px auto;
-    padding: 40px 24px;
-    text-align: center;
-  }
-  .score-circle {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 24px;
-    box-shadow: 0 8px 30px rgba(102,126,234,0.3);
-  }
-  .score-number { font-size: 3em; font-weight: 700; }
-  .score-label { font-size: 0.85em; opacity: 0.8; }
-  .result-detail { text-align: left; background: white; border-radius: 12px; padding: 20px; margin: 20px 0; }
-  .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-  .result-item:last-child { border: none; }
-
-  .padding-bottom { height: 80px; }
-
-  /* Responsive */
-  @media (max-width: 600px) {
-    .header h1 { font-size: 1.1em; }
-    .header .timer { font-size: 1em; padding: 5px 14px; }
-    .exam-container { padding: 10px; }
-    .section { padding: 16px 14px; border-radius: 10px; }
-    .q-text { font-size: 0.9em; }
-    .option { padding: 9px 12px; font-size: 0.88em; }
-    .nav-btn { padding: 11px 24px; font-size: 0.9em; }
-  }
-
-  /* Answer explanation */
-  .answer-box {
-    margin-top: 10px;
-    padding: 10px 14px;
-    background: #f0f7ff;
-    border-radius: 8px;
-    font-size: 0.88em;
-    border-left: 3px solid #667eea;
-  }
-  .answer-box.wrong { background: #fff5f5; border-left-color: #f44336; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#333;line-height:1.6;min-height:100vh}
+.header{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.header h1{font-size:1.25em;margin-bottom:4px}
+.header .sub{font-size:.82em;opacity:.85}
+.timer{display:inline-block;background:rgba(255,255,255,.15);padding:5px 18px;border-radius:20px;margin-top:8px;font-size:1.05em;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.progress{height:3px;background:rgba(255,255,255,.15);margin-top:10px;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:#ffca28;width:0;transition:width .3s}
+.start-screen{max-width:480px;margin:80px auto;padding:40px 24px;text-align:center;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.start-screen h2{font-size:1.4em;margin-bottom:8px;color:#1a237e}
+.start-screen p{color:#666;margin-bottom:20px;font-size:.92em}
+.start-screen .info-box{background:#f5f7fa;border-radius:10px;padding:16px;margin-bottom:24px;text-align:left;font-size:.88em;color:#555}
+.start-screen .info-box div{padding:4px 0}
+.start-btn{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;border:none;padding:14px 48px;font-size:1.05em;border-radius:30px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,35,126,.3)}
+.start-btn:active{transform:scale(.97)}
+.container{max-width:820px;margin:0 auto;padding:12px 16px 90px}
+.section{background:#fff;border-radius:12px;margin-bottom:14px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.section-title{font-size:1.05em;font-weight:700;color:#1a237e;margin-bottom:3px;border-left:4px solid #1a237e;padding-left:10px}
+.section-desc{font-size:.78em;color:#999;margin-bottom:14px;padding-left:14px}
+.question{padding:14px 0;border-bottom:1px solid #f0f0f0}
+.question:last-child{border-bottom:none}
+.q-head{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+.q-num{background:#1a237e;color:#fff;min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8em;font-weight:600;flex-shrink:0}
+.q-score{font-size:.72em;color:#bbb;align-self:center}
+.q-text{flex:1;font-size:.92em;line-height:1.7}
+.q-img{width:100%;max-width:400px;margin:8px auto;display:block;border-radius:8px;border:1px solid #eee}
+.options{margin-top:10px}
+.option{display:flex;align-items:center;padding:9px 12px;margin:5px 0;background:#f8f9fc;border:2px solid transparent;border-radius:10px;cursor:pointer;transition:all .15s;font-size:.9em}
+.option:hover{background:#eef0ff;border-color:#c5cae9}
+.option.selected{background:#e8eaf6;border-color:#1a237e}
+.option.correct{background:#e8f5e9!important;border-color:#4caf50!important}
+.option.wrong{background:#fce4ec!important;border-color:#f44336!important}
+.opt-label{width:26px;height:26px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8em;margin-right:10px;flex-shrink:0;transition:background .15s}
+.option.selected .opt-label{background:#1a237e;color:#fff}
+.option.correct .opt-label{background:#4caf50;color:#fff}
+.option.wrong .opt-label{background:#f44336;color:#fff}
+.fill-input{border:2px solid #e0e0e0;border-radius:8px;padding:9px 12px;font-size:.95em;width:100%;max-width:300px;margin-top:6px;transition:border-color .2s}
+.fill-input:focus{outline:none;border-color:#1a237e}
+.fill-input.correct{border-color:#4caf50!important;background:#f1f8e9!important}
+.fill-input.wrong{border-color:#f44336!important;background:#fef5f5!important}
+.solve-box{margin-top:8px;padding:12px 14px;background:#f5f7fa;border-radius:8px;font-size:.85em;color:#555;border-left:3px solid #90a4ae}
+.nav-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 16px;display:flex;justify-content:center;box-shadow:0 -2px 10px rgba(0,0,0,.06);z-index:100}
+.submit-btn{padding:12px 48px;border:none;border-radius:25px;font-size:.95em;cursor:pointer;background:linear-gradient(135deg,#1a237e,#283593);color:#fff;transition:transform .15s}
+.submit-btn:active{transform:scale(.95)}
+.result-screen{max-width:480px;margin:50px auto;padding:36px 24px;text-align:center}
+.score-circle{width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,#1a237e,#283593);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 30px rgba(26,35,126,.25)}
+.score-num{font-size:2.8em;font-weight:700}
+.score-label{font-size:.8em;opacity:.8}
+.result-box{text-align:left;background:#fff;border-radius:12px;padding:18px;margin:16px 0;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.result-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:.9em}
+.result-row:last-child{border:none}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75em;margin-left:6px}
+.tag-choice{background:#e3f2fd;color:#1565c0}
+.tag-judge{background:#fff3e0;color:#e65100}
+.tag-solve{background:#f3e5f5;color:#7b1fa2}
+.answer-explain{margin-top:8px;padding:8px 12px;border-radius:6px;font-size:.82em;border-left:3px solid #1a237e;background:#f5f7fa}
+.answer-explain.err{border-left-color:#f44336;background:#fef5f5}
+@media(max-width:600px){.header h1{font-size:1.05em}.container{padding:8px 10px 90px}.section{padding:14px 12px}.q-text{font-size:.88em}.option{padding:8px 10px;font-size:.86em}}
 </style>
 </head>
 <body>
 
-<!-- START SCREEN -->
 <div id="startScreen" class="start-screen">
-  <h2>📝 八年级数学期中测试</h2>
-  <p>共 10 题 · 满分 100 分 · 时长 20 分钟<br>题型顺序固定，题目顺序随机</p>
-  <p style="font-size:0.85em;color:#999;">本试卷为 AutoClaw 智能组卷演示</p>
-  <button class="start-btn" onclick="startExam()">开始考试</button>
+<h2>⚙️ 机械综合模拟考试</h2>
+<p>满分 150 分 · 考试时间 60 分钟</p>
+<div class="info-box">
+<div>📋 选择题 30 题（每题 3 分，共 90 分）</div>
+<div>✅ 判断题 10 题（每题 2 分，共 20 分）</div>
+<div>📝 综合题 3 题（共 40 分）</div>
+<div>🔄 题目顺序每次随机，每位同学不同</div>
+</div>
+<button class="start-btn" onclick="startExam()">开始考试</button>
 </div>
 
-<!-- EXAM SCREEN -->
-<div id="examScreen" style="display:none;">
-  <div class="header">
-    <h1>八年级数学期中测试</h1>
-    <div class="info">满分 100 分 · 共 10 题</div>
-    <div class="timer" id="timer">20:00</div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  </div>
-  <div class="exam-container" id="examBody"></div>
-  <div class="padding-bottom"></div>
-  <div class="nav-bar">
-    <button class="nav-btn prev" id="submitBtn" onclick="submitExam()">交 卷</button>
-  </div>
+<div id="examScreen" style="display:none">
+<div class="header">
+<h1>机械综合模拟考试</h1>
+<div class="sub">满分 150 分 · 考试时间 60 分钟</div>
+<div class="timer" id="timer">60:00</div>
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+<div class="container" id="examBody"></div>
+<div class="nav-bar"><button class="submit-btn" onclick="submitExam()">交 卷</button></div>
 </div>
 
-<!-- RESULT SCREEN -->
-<div id="resultScreen" style="display:none;">
-  <div class="result-screen">
-    <div class="score-circle">
-      <div class="score-number" id="finalScore">0</div>
-      <div class="score-label">总分 / 100</div>
-    </div>
-    <div class="result-detail" id="resultDetail"></div>
-    <button class="start-btn" onclick="location.reload()">重新开始</button>
-  </div>
+<div id="resultScreen" style="display:none">
+<div class="result-screen">
+<div class="score-circle"><div class="score-num" id="finalScore">0</div><div class="score-label">总分 / 150</div></div>
+<div class="result-box" id="resultDetail"></div>
+<button class="start-btn" onclick="location.reload()">重新开始</button>
+</div>
 </div>
 
 <script>
-// ===== Question Bank =====
-const bank = {
-  choice: [
-    {
-      text: "下列函数中，是正比例函数的是：",
-      options: ["y = 2x + 1", "y = 3x", "y = x²", "y = 1/x"],
-      answer: 1,
-      score: 5,
-      explain: "正比例函数的一般形式为 y = kx（k≠0），y = 3x 符合。"
-    },
-    {
-      text: "一次函数 y = -2x + 3 的图象经过第几象限？",
-      options: ["一、二、三", "一、二、四", "一、三、四", "二、三、四"],
-      answer: 1,
-      score: 5,
-      explain: "k = -2 < 0, b = 3 > 0，图象经过一、二、四象限。"
-    },
-    {
-      text: "若点 (2, m) 在一次函数 y = 3x - 1 的图象上，则 m 的值为：",
-      options: ["5", "6", "7", "8"],
-      answer: 0,
-      score: 5,
-      explain: "将 x=2 代入 y = 3×2 - 1 = 5，所以 m = 5。"
-    },
-    {
-      text: "在平面直角坐标系中，点 (-3, 4) 所在的象限是：",
-      options: ["第一象限", "第二象限", "第三象限", "第四象限"],
-      answer: 1,
-      score: 5,
-      explain: "x < 0, y > 0，在第二象限。"
-    },
-    {
-      text: "下列哪个是一次函数 y = kx + b 的图象特征？",
-      options: ["一定经过原点", "一定是直线", "一定是曲线", "一定与坐标轴不相交"],
-      answer: 1,
-      score: 5,
-      explain: "一次函数的图象是一条直线。正比例函数才一定过原点。"
-    },
-    {
-      text: "平行四边形的对角线一定具有的性质是：",
-      options: ["相等", "互相垂直", "互相平分", "互相垂直且相等"],
-      answer: 2,
-      score: 5,
-      explain: "平行四边形的对角线互相平分。矩形的对角线相等，菱形的对角线互相垂直。"
-    },
-    {
-      text: "函数 y = 2x - 4 与 x 轴的交点坐标是：",
-      options: ["(0, -4)", "(2, 0)", "(-4, 0)", "(0, 2)"],
-      answer: 1,
-      score: 5,
-      explain: "令 y=0，2x-4=0，x=2，所以交点为 (2, 0)。"
-    },
-    {
-      text: "已知一次函数经过 (1, 3) 和 (2, 5) 两点，则函数表达式为：",
-      options: ["y = 2x + 1", "y = x + 2", "y = 2x - 1", "y = 3x"],
-      answer: 0,
-      score: 5,
-      explain: "k = (5-3)/(2-1) = 2，b = 3 - 2×1 = 1，所以 y = 2x + 1。"
-    }
-  ],
-  fill: [
-    {
-      text: "正比例函数 y = kx 经过点 (3, -6)，则 k = ______。",
-      answer: "-2",
-      score: 5,
-      explain: "k = y/x = -6/3 = -2。"
-    },
-    {
-      text: "平行四边形的周长为 40 cm，一条边长为 8 cm，则与它相邻的边长为 ______ cm。",
-      answer: "12",
-      score: 5,
-      explain: "平行四边形对边相等，设邻边为 a，则 2×(8+a) = 40，a = 12。"
-    }
-  ],
-  solve: [
-    {
-      text: "如图所示，在平行四边形 ABCD 中，∠A = 60°，AB = 8 cm，BC = 6 cm。求平行四边形 ABCD 的面积。",
-      image: true,
-      answer: "24√3 cm²（约 41.6 cm²）",
-      score: 15,
-      explain: "过 B 作 BE⊥AD 于 E，在 Rt△ABE 中，∠A=60°，AB=8，所以 BE = 8·sin60° = 4√3。面积 = AD × BE = 6 × 4√3 = 24√3 cm²。"
-    },
-    {
-      text: "已知一次函数 y = kx + b 的图象经过点 A(1, 4) 和点 B(-2, -2)。\n（1）求这个一次函数的表达式；\n（2）判断点 C(3, 7) 是否在该函数图象上。",
-      answer: "（1）y = 2x + 2；（2）点 C(3, 7) 在图象上",
-      score: 15,
-      explain: "（1）k = (4-(-2))/(1-(-2)) = 6/3 = 2，b = 4 - 2×1 = 2，所以 y = 2x + 2。\n（2）将 x=3 代入，y = 2×3 + 2 = 8 ≠ 7，所以点 C 不在图象上。（原答案有误，正确答案为：点 C 不在图象上，因为代入得 y=8≠7。）"
-    }
-  ]
-};
+// ===== QUESTION BANK =====
+const CHOICE = [
+// 机械制图 (7题) ~24%
+{text:"在机械制图中，图框格式分为不留装订边和留装订边两种，留装订边时，装订边一般位于图框的",opts:["左侧","右侧","上方","下方"],ans:0,kp:"机械制图"},
+{text:"三视图中，主视图反映物体的（）",opts:["长度和宽度","高度和宽度","长度和高度","高度和深度"],ans:2,kp:"机械制图"},
+{text:"在剖视图中，剖面符号用与水平线成（）的细实线绘制",opts:["30°","45°","60°","90°"],ans:1,kp:"机械制图"},
+{text:"外螺纹在剖视图中的画法，其螺纹牙底线应画成",opts:["粗实线","细实线","虚线","点划线"],ans:1,kp:"机械制图"},
+{text:"已知主、俯视图，选择正确的左视图（如图所示为四棱台，底面为矩形）",opts:["图形A","图形B","图形C","图形D"],ans:2,kp:"机械制图"},
+{text:"在零件图中，表示表面粗糙度的代号为 Ra，其单位是",opts:["毫米(mm)","微米(μm)","纳米(nm)","厘米(cm)"],ans:1,kp:"机械制图"},
+{text:"一张完整的装配图应包括的内容有",opts:["一组图形、必要的尺寸、技术要求和标题栏","一组图形、全部尺寸、技术要求和明细栏","一组图形、必要的尺寸、标题栏和明细栏","全部尺寸、技术要求和标题栏"],ans:2,kp:"机械制图"},
+// 公差配合与测量 (7题) ~23%
+{text:"配合代号 φ50H7/f6 表示的是",opts:["基孔制间隙配合","基轴制间隙配合","基孔制过盈配合","基轴制过渡配合"],ans:0,kp:"公差配合与测量"},
+{text:"标准公差等级中，IT7 与 IT9 相比，精度的关系是",opts:["IT7 比 IT9 高","IT9 比 IT7 高","两者相等","无法比较"],ans:0,kp:"公差配合与测量"},
+{text:"游标卡尺的读数精度最常见的是",opts:["0.01mm","0.02mm","0.05mm","0.1mm"],ans:1,kp:"公差配合与测量"},
+{text:"形位公差中，符号"⊥"表示的是",opts:["直线度","平面度","垂直度","对称度"],ans:2,kp:"公差配合与测量"},
+{text:"在尺寸 φ30H7/f6 中，"H7"的含义是",opts:["轴的基本偏差代号","孔的基本偏差代号，公差等级7级","孔的公差等级7级","轴的公差等级7级"],ans:1,kp:"公差配合与测量"},
+{text:"某零件的尺寸标注为 φ40⁺⁰·⁰⁵₋₀.₁，则该尺寸的最大极限尺寸为",opts:["40.0mm","40.1mm","40.5mm","40.6mm"],ans:2,kp:"公差配合与测量"},
+{text:"测量时，测量误差中的随机误差可以采用（）的方法来减小",opts:["更换量具","增加测量次数取平均值","只测一次","增大测量力"],ans:1,kp:"公差配合与测量"},
+// 机械传动 (5题) ~17%
+{text:"一对标准直齿圆柱齿轮正确啮合的条件是",opts:["模数相等","压力角相等","模数和压力角都相等","齿厚等于齿槽宽"],ans:2,kp:"机械传动"},
+{text:"蜗杆传动的主要优点是",opts:["传动效率高","可获得大的传动比且有自锁性","制造成本低","传动功率大"],ans:1,kp:"机械传动"},
+{text:"V 带传动中，张紧轮应安装在",opts:["紧边内侧靠近小带轮处","松边内侧靠近大带轮处","紧边外侧","松边外侧靠近小带轮处"],ans:1,kp:"机械传动"},
+{text:"标准直齿圆柱齿轮的齿顶高系数 h*a* 为",opts:["0.8","0.9","1","1.2"],ans:2,kp:"机械传动"},
+{text:"链传动与带传动相比，以下说法正确的是",opts:["链传动缓冲吸振能力更强","链传动能保持准确的平均传动比","链传动适用于高速传动","链传动不需要张紧装置"],ans:1,kp:"机械传动"},
+// 金属材料与热处理 (4题) ~14%
+{text:"将淬火后的钢件进行高温回火的热处理工艺称为",opts:["完全退火","正火","调质处理","低温回火"],ans:2,kp:"金属材料与热处理"},
+{text:"下列材料中，焊接性最好的是",opts:["20钢","HT300","Cr12MoV","65Mn"],ans:0,kp:"金属材料与热处理"},
+{text:"T10 钢属于",opts:["低碳钢","中碳钢","高碳钢","合金钢"],ans:2,kp:"金属材料与热处理"},
+{text:"关于金属材料韧性的表述，正确的是",opts:["T7的韧性高于T10","45钢的韧性高于T12","QT400-15的韧性低于HT150","高碳钢韧性最好"],ans:0,kp:"金属材料与热处理"},
+// 常用机构 (3题) ~10%
+{text:"在铰链四杆机构中，若最短杆与最长杆长度之和大于其余两杆长度之和，则",opts:["一定有曲柄","一定没有曲柄","可能有曲柄","无法确定"],ans:1,kp:"常用机构"},
+{text:"凸轮机构中，从动件作等速运动的规律是",opts:["等加速等减速运动","简谐运动","等速运动","摆线运动"],ans:2,kp:"常用机构"},
+{text:"曲柄滑块机构可用于将",opts:["回转运动转换为摆动","回转运动转换为直线运动","直线运动转换为回转运动","摆动转换为直线运动"],ans:1,kp:"常用机构"},
+// 液压与气压传动 (2题) ~7%
+{text:"在液压传动系统中，用于控制油液流动方向的元件是",opts:["溢流阀","减压阀","换向阀","节流阀"],ans:2,kp:"液压与气压传动"},
+{text:"液压系统中，溢流阀的主要作用是",opts:["控制执行元件的运动速度","调节系统压力、防止过载","控制油液流动方向","储存液压能"],ans:1,kp:"液压与气压传动"},
+// 机械零件 (2题) ~6%
+{text:"主要承受径向载荷，同时承受少量轴向载荷的滚动轴承是",opts:["深沟球轴承","推力球轴承","圆柱滚子轴承","圆锥滚子轴承"],ans:0,kp:"机械零件"},
+{text:"普通平键连接的工作面是",opts:["上下面","两侧面","两端面","所有面"],ans:1,kp:"机械零件"}
+];
 
+const JUDGE = [
+// 机械制图 (3题)
+{text:"零件图上的尺寸必须是设计基准与工艺基准统一的尺寸。",ans:false,kp:"机械制图"},
+{text:"局部剖视图中，视图与剖视的分界线用粗实线绘制。",ans:false,kp:"机械制图"},
+{text:"M24×1.5-6H 表示公称直径为 24mm，螺距为 1.5mm 的细牙普通内螺纹。",ans:true,kp:"机械制图"},
+// 公差配合 (3题)
+{text:"基准孔制的特点是孔的基本偏差为一定值，通过改变轴的基本偏差来获得不同配合。",ans:true,kp:"公差配合与测量"},
+{text:"Ra 值越大，表示零件表面越光滑。",ans:false,kp:"公差配合与测量"},
+{text:"公差带的大小由标准公差决定，公差带的位置由基本偏差决定。",ans:true,kp:"公差配合与测量"},
+// 机械传动 (2题)
+{text:"斜齿圆柱齿轮的端面模数大于法面模数。",ans:true,kp:"机械传动"},
+{text:"链传动瞬时传动比恒定不变。",ans:false,kp:"机械传动"},
+// 金属材料 (2题)
+{text:"钢经调质处理后，可获得良好的综合力学性能。",ans:true,kp:"金属材料与热处理"},
+{text:"灰铸铁的塑性差，但具有良好的铸造性能和减振性。",ans:true,kp:"金属材料与热处理"},
+];
+
+const SOLVE = [
+{text:"补画三视图中所缺的图线（如图所示，一个带有通孔和阶梯面的立体）。\n说明：请根据给定的主视图和俯视图，补画左视图中缺少的图线。",score:12,ans:"根据形体分析法，该立体由底板、立板和通孔组成。左视图中缺少：立板前表面的投影线（粗实线）、底板上表面的投影线（粗实线）、通孔的虚线（两条水平虚线）以及立板与底板交线的投影。",kp:"机械制图"},
+{text:"如图所示减速器，已知输入轴与输出轴的中心距为 200mm，大齿轮齿数为 80，模数 m=2.5mm，小齿轮齿数为 20。\n（1）求传动比 i₁₂\n（2）求小齿轮的分度圆直径 d₁\n（3）求大齿轮的齿顶圆直径 da₂（齿顶高系数 h*a*=1）\n（4）该减速器中应选用哪种类型的轴承？为什么？",score:14,
+ans:"（1）i₁₂ = z₂/z₁ = 80/20 = 4\n（2）d₁ = m × z₁ = 2.5 × 20 = 50mm\n（3）da₂ = m(z₂ + 2h*a*) = 2.5 × (80 + 2) = 205mm\n（4）减速器低速轴承受较大径向力和一定轴向力，应选用圆锥滚子轴承，可同时承受径向和轴向载荷。",
+kp:"机械传动+机械零件"},
+{text:"识读零件图（如图所示为阶梯轴），回答下列问题：\n（1）该零件图中采用了哪些表达方法？\n（2）尺寸 φ30f7 中，f7 表示什么？\n（3）表面粗糙度 Ra1.6 和 Ra6.3，哪个表面要求更高？\n（4）图中形位公差标注 ○0.02 A 的含义是什么？\n（5）该轴上的键槽宽度尺寸为 8JS9，JS9 是什么含义？",
+score:14,
+ans:"（1）采用了一个主视图（局部剖视，表达内部键槽和中心孔）和一个移出断面图（表达键槽深度）。\n（2）f7 表示轴的基本偏差代号为 f，公差等级为 IT7 级。\n（3）Ra1.6 的表面要求更高（Ra 值越小越光滑）。\n（4）表示 φ30 圆柱面的轴线相对于基准 A 的同轴度公差为 0.02mm。\n（5）JS9 表示键槽宽度的公差等级为 IT9 级，基本偏差代号为 JS（对称偏差）。",
+kp:"机械制图+公差配合与测量"}
+];
+
+// ===== STATE =====
 let userAnswers = {};
+let timeLeft = 60 * 60;
 let timerInterval;
-let timeLeft = 20 * 60;
+const LABELS = ['A','B','C','D','E','F','G','H'];
 
-// ===== Shuffle helper =====
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 
-// ===== SVG Image Generator =====
-function getParallelogramSVG() {
-  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="360" height="216">
-  <rect width="400" height="240" fill="#fafbff"/>
-  <polygon points="80,180 320,180 360,60 120,60" fill="none" stroke="#333" stroke-width="2.5"/>
-  <line x1="80" y1="180" x2="120" y2="60" stroke="#333" stroke-width="2.5"/>
-  <line x1="320" y1="180" x2="360" y2="60" stroke="#333" stroke-width="2.5" stroke-dasharray="8,4"/>
-  <text x="70" y="200" font-size="16" fill="#667eea" font-weight="bold">A</text>
-  <text x="310" y="200" font-size="16" fill="#667eea" font-weight="bold">B</text>
-  <text x="355" y="56" font-size="16" fill="#667eea" font-weight="bold">C</text>
-  <text x="100" y="56" font-size="16" fill="#667eea" font-weight="bold">D</text>
-  <!-- angle arc at A -->
-  <path d="M 110,180 A 30,30 0 0,0 94,162" fill="none" stroke="#e74c3c" stroke-width="2"/>
-  <text x="112" y="170" font-size="14" fill="#e74c3c">60°</text>
-  <!-- labels -->
-  <text x="180" y="168" font-size="13" fill="#888">8 cm</text>
-  <text x="370" y="125" font-size="13" fill="#888">6 cm</text>
-</svg>`)}`;
-}
-
-// ===== Render =====
-function renderExam() {
-  const container = document.getElementById('examBody');
-  const sections = [
-    { title: '一、选择题', desc: '（每小题 5 分，共 40 分）', data: shuffle(bank.choice), type: 'choice' },
-    { title: '二、填空题', desc: '（每小题 5 分，共 10 分）', data: shuffle(bank.fill), type: 'fill' },
-    { title: '三、解答题', desc: '（共 30 分）', data: shuffle(bank.solve), type: 'solve' }
-  ];
-
-  let html = '';
-  let qGlobalIdx = 0;
-
-  sections.forEach(sec => {
-    html += `<div class="section"><div class="section-title">${sec.title}</div><div class="section-desc">${sec.desc}</div>`;
-    sec.data.forEach((q, i) => {
-      qGlobalIdx++;
-      const qId = `${sec.type}_${i}`;
-      html += `<div class="question" id="q_${qId}">`;
-      html += `<div class="question-header"><span class="q-num">${qGlobalIdx}</span><span class="q-score">（${q.score} 分）</span><span class="q-text">${q.text.replace(/\n/g, '<br>')}</span></div>`;
-
-      if (q.image) {
-        html += `<img src="${getParallelogramSVG()}" class="q-image" alt="几何图形">`;
-      }
-
-      if (sec.type === 'choice') {
-        html += '<div class="options">';
-        const labels = ['A', 'B', 'C', 'D'];
-        q.options.forEach((opt, oi) => {
-          html += `<div class="option" id="opt_${qId}_${oi}" onclick="selectChoice('${qId}', ${oi})">
-            <span class="option-label">${labels[oi]}</span>
-            <span>${opt}</span>
-          </div>`;
-        });
-        html += '</div>';
-      } else if (sec.type === 'fill') {
-        html += `<input class="fill-input" id="input_${qId}" placeholder="请输入答案" autocomplete="off">`;
-      } else {
-        html += `<div class="fill-input" contenteditable="false" style="cursor:default;background:#f5f5f5;color:#999;">主观题 — 请在纸上作答，交卷后查看参考答案</div>`;
-      }
-      html += '</div>';
-    });
-    html += '</div>';
-  });
-
-  container.innerHTML = html;
-}
-
-function selectChoice(qId, idx) {
-  // Deselect all for this question
-  document.querySelectorAll(`[id^="opt_${qId}_"]`).forEach(el => el.classList.remove('selected'));
-  document.getElementById(`opt_${qId}_${idx}`).classList.add('selected');
-  userAnswers[qId] = idx;
-}
-
-// ===== Timer =====
-function startTimer() {
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    const m = Math.floor(timeLeft / 60);
-    const s = timeLeft % 60;
-    document.getElementById('timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      submitExam();
-    }
-  }, 1000);
-}
-
-// ===== Progress =====
-function updateProgress() {
-  const total = 8 + 2 + 2; // total questions
-  let answered = 0;
-  // Count answered choice & fill
-  document.querySelectorAll('.option.selected').forEach(() => answered++); // won't work well, skip for demo
-  const pct = Math.min(100, (answered / total) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-}
-
-// ===== Start =====
-function startExam() {
-  document.getElementById('startScreen').style.display = 'none';
-  document.getElementById('examScreen').style.display = 'block';
+function startExam(){
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('examScreen').style.display='block';
   renderExam();
   startTimer();
 }
 
-// ===== Submit =====
-function submitExam() {
-  clearInterval(timerInterval);
+function renderExam(){
+  const body = document.getElementById('examBody');
+  const choiceQ = shuffle(CHOICE);
+  const judgeQ = shuffle(JUDGE);
+  const solveQ = shuffle(SOLVE);
+  let html = '';
+  let num = 0;
 
-  // Collect answers
-  let totalScore = 0;
-  let maxScore = 0;
-  let correctCount = 0;
-  let totalCount = 0;
+  // Store shuffled order for grading
+  window._choiceOrder = choiceQ;
+  window._judgeOrder = judgeQ;
+  window._solveOrder = solveQ;
+
+  // === 选择题 ===
+  html += '<div class="section"><div class="section-title">一、单项选择题</div>';
+  html += '<div class="section-desc">本大题共 30 小题，每小题 3 分，共 90 分</div>';
+  choiceQ.forEach((q,i)=>{
+    num++;
+    const id = 'c'+i;
+    html += `<div class="question"><div class="q-head"><span class="q-num">${num}</span><span class="q-score">（3 分）</span></div>`;
+    html += `<div class="q-text">${q.text}</div><div class="options">`;
+    q.opts.forEach((opt,oi)=>{
+      html += `<div class="option" id="opt_${id}_${oi}" onclick="selChoice('${id}',${oi})"><span class="opt-label">${LABELS[oi]}</span><span>${opt}</span></div>`;
+    });
+    html += '</div></div>';
+  });
+  html += '</div>';
+
+  // === 判断题 ===
+  html += '<div class="section"><div class="section-title">二、是非选择题（判断题）</div>';
+  html += '<div class="section-desc">本大题共 10 小题，每小题 2 分，共 20 分。正确的涂 A，错误的涂 B</div>';
+  judgeQ.forEach((q,i)=>{
+    num++;
+    const id = 'j'+i;
+    html += `<div class="question"><div class="q-head"><span class="q-num">${num}</span><span class="q-score">（2 分）</span></div>`;
+    html += `<div class="q-text">${q.text}（  ）</div><div class="options">`;
+    html += `<div class="option" id="opt_${id}_0" onclick="selChoice('${id}',0)"><span class="opt-label">A</span><span>正确</span></div>`;
+    html += `<div class="option" id="opt_${id}_1" onclick="selChoice('${id}',1)"><span class="opt-label">B</span><span>错误</span></div>`;
+    html += '</div></div>';
+  });
+  html += '</div>';
+
+  // === 综合题 ===
+  let solveTotal = 0;
+  solveQ.forEach(s => solveTotal += (s.score || 0));
+  html += `<div class="section"><div class="section-title">三、综合题</div>`;
+  html += `<div class="section-desc">本大题共 3 小题，共 ${solveTotal} 分</div>`;
+  solveQ.forEach((q,i)=>{
+    num++;
+    const id = 's'+i;
+    const qtext = q.text.replace(/\n/g,'<br>');
+    html += `<div class="question"><div class="q-head"><span class="q-num">${num}</span><span class="q-score">（${q.score} 分）</span></div>`;
+    html += `<div class="q-text">${qtext}</div>`;
+    html += `<div class="solve-box">主观题 — 请在纸上作答，交卷后查看参考答案与解析。</div>`;
+    html += '</div>';
+  });
+  html += '</div>';
+
+  body.innerHTML = html;
+}
+
+function selChoice(id,idx){
+  document.querySelectorAll(`[id^="opt_${id}_"]`).forEach(el=>el.classList.remove('selected'));
+  document.getElementById(`opt_${id}_${idx}`).classList.add('selected');
+  userAnswers[id] = idx;
+  // Update progress
+  const total = 30 + 10;
+  let answered = 0;
+  for(let i=0;i<30;i++) if(userAnswers['c'+i]!==undefined) answered++;
+  for(let i=0;i<10;i++) if(userAnswers['j'+i]!==undefined) answered++;
+  document.getElementById('progressFill').style.width = (answered/total*100)+'%';
+}
+
+function startTimer(){
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60), s=timeLeft%60;
+    document.getElementById('timer').textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    if(timeLeft<=60) document.getElementById('timer').style.color='#ff5252';
+    if(timeLeft<=0){clearInterval(timerInterval);submitExam()}
+  },1000);
+}
+
+function submitExam(){
+  clearInterval(timerInterval);
+  if(timeLeft>0 && !confirm('确定要交卷吗？还有 '+Math.ceil(timeLeft/60)+' 分钟')) return;
+  
+  let score = 0;
+  const choiceQ = window._choiceOrder;
+  const judgeQ = window._judgeOrder;
+  const solveQ = window._solveOrder;
+  let correct = 0, total = 30+10;
   const details = [];
 
-  // Process choices
-  document.querySelectorAll('[class="question"]').forEach(qEl => {
-    const id = qEl.id.replace('q_', '');
-    const [type, idx] = id.split('_');
-    let q;
-    if (type === 'choice') q = bank.choice[idx];
-    else if (type === 'fill') q = bank.fill[idx];
-    else q = bank.solve[idx];
-
-    maxScore += q.score;
-    totalCount++;
-
-    if (type === 'choice') {
-      const userAns = userAnswers[id];
-      if (userAns !== undefined) {
-        if (userAns === q.answer) {
-          totalScore += q.score;
-          correctCount++;
-          document.getElementById(`opt_${id}_${userAns}`).classList.add('correct');
-          details.push({ name: `第${totalCount}题`, score: q.score, max: q.score, ok: true });
-        } else {
-          document.getElementById(`opt_${id}_${userAns}`).classList.add('wrong');
-          document.getElementById(`opt_${id}_${q.answer}`).classList.add('correct');
-          details.push({ name: `第${totalCount}题`, score: 0, max: q.score, ok: false });
-        }
-        // Add explanation
-        const box = document.createElement('div');
-        box.className = 'answer-box' + (userAns !== q.answer ? ' wrong' : '');
-        box.innerHTML = `<strong>解析：</strong>${q.explain}`;
-        qEl.appendChild(box);
-        // Disable clicking
-        document.querySelectorAll(`[id^="opt_${id}_"]`).forEach(el => el.style.pointerEvents = 'none');
-      } else {
-        document.getElementById(`opt_${id}_${q.answer}`).classList.add('correct');
-        const box = document.createElement('div');
-        box.className = 'answer-box wrong';
-        box.innerHTML = `<strong>未作答</strong>｜<strong>正确答案：</strong>${'ABCD'[q.answer]}<br><strong>解析：</strong>${q.explain}`;
-        qEl.appendChild(box);
-        details.push({ name: `第${totalCount}题`, score: 0, max: q.score, ok: false });
-      }
-    } else if (type === 'fill') {
-      const input = document.getElementById(`input_${id}`);
-      const userVal = (input ? input.value.trim() : '').replace(/\s/g, '');
-      const correctVal = q.answer.replace(/\s/g, '');
-      if (userVal === correctVal) {
-        totalScore += q.score;
-        correctCount++;
-        if (input) { input.style.borderColor = '#4caf50'; input.style.background = '#e8f5e9'; }
-        details.push({ name: `第${totalCount}题`, score: q.score, max: q.score, ok: true });
-      } else {
-        const box = document.createElement('div');
-        box.className = 'answer-box wrong';
-        box.innerHTML = `<strong>你的答案：</strong>${userVal || '（未作答）'}｜<strong>正确答案：</strong>${q.answer}<br><strong>解析：</strong>${q.explain}`;
-        qEl.appendChild(box);
-        if (input) { input.disabled = true; input.style.borderColor = '#f44336'; }
-        details.push({ name: `第${totalCount}题`, score: 0, max: q.score, ok: false });
-      }
-    } else {
-      // Solve - show reference answer
-      const box = document.createElement('div');
-      box.className = 'answer-box';
-      box.innerHTML = `<strong>参考答案：</strong>${q.answer}<br><strong>解析：</strong>${q.explain}`;
-      qEl.appendChild(box);
-      details.push({ name: `第${totalCount}题（主观题）`, score: '-', max: q.score, ok: null });
+  // Grade choices
+  choiceQ.forEach((q,i)=>{
+    const id='c'+i;
+    const ua = userAnswers[id];
+    if(ua===q.ans){score+=3;correct++;details.push({num:i+1,type:'choice',ok:true,score:3})}
+    else{details.push({num:i+1,type:'choice',ok:false,score:0})}
+    // Show answer
+    if(ua!==undefined){
+      document.getElementById(`opt_${id}_${ua}`).classList.add(ua===q.ans?'correct':'wrong');
     }
+    document.getElementById(`opt_${id}_${q.ans}`).classList.add('correct');
+    // Disable
+    document.querySelectorAll(`[id^="opt_${id}_"]`).forEach(el=>el.style.pointerEvents='none');
+  });
+
+  // Grade judges
+  judgeQ.forEach((q,i)=>{
+    const id='j'+i;
+    const ua = userAnswers[id];
+    if(ua===q.ans){score+=2;correct++;details.push({num:30+i+1,type:'judge',ok:true,score:2})}
+    else{details.push({num:30+i+1,type:'judge',ok:false,score:0})}
+    if(ua!==undefined){
+      document.getElementById(`opt_${id}_${ua}`).classList.add(ua===q.ans?'correct':'wrong');
+    }
+    document.getElementById(`opt_${id}_${q.ans}`).classList.add('correct');
+    document.querySelectorAll(`[id^="opt_${id}_"]`).forEach(el=>el.style.pointerEvents='none');
+  });
+
+  // Show solve answers
+  solveQ.forEach((q,i)=>{
+    const id='s'+i;
+    const box = document.createElement('div');
+    box.className = 'answer-explain';
+    box.innerHTML = `<strong>参考答案：</strong>${q.ans}`;
+    document.querySelector(`#s${i}`).appendChild(box);
+    details.push({num:40+i+1,type:'solve',ok:null,score:null});
   });
 
   // Hide submit, show result
-  document.querySelector('.nav-bar').style.display = 'none';
+  document.querySelector('.nav-bar').style.display='none';
 
-  // Show result overlay
-  setTimeout(() => {
-    document.getElementById('resultScreen').style.display = 'block';
-    document.getElementById('finalScore').textContent = totalScore;
+  setTimeout(()=>{
+    document.getElementById('resultScreen').style.display='block';
+    document.getElementById('finalScore').textContent = score;
 
-    let detailHtml = `<div class="result-item"><span>总题数</span><span>${totalCount} 题</span></div>`;
-    detailHtml += `<div class="result-item"><span>客观题正确</span><span>${correctCount} 题</span></div>`;
-    detailHtml += `<div class="result-item"><span>用时</span><span>${document.getElementById('timer').textContent}</span></div>`;
-    detailHtml += `<div class="result-item" style="border-top:2px solid #f0f0f0;padding-top:12px;"><span style="font-weight:600;">总分</span><span style="font-weight:600;color:#667eea;">${totalScore} / ${maxScore}</span></div>`;
-    document.getElementById('resultDetail').innerHTML = detailHtml;
+    let choiceOk = details.filter(d=>d.type==='choice'&&d.ok).length;
+    let judgeOk = details.filter(d=>d.type==='judge'&&d.ok).length;
 
-    document.getElementById('resultScreen').scrollIntoView({ behavior: 'smooth' });
-  }, 300);
+    document.getElementById('resultDetail').innerHTML = `
+      <div class="result-row"><span>客观题正确率</span><span>${correct} / ${total}（${Math.round(correct/total*100)}%）</span></div>
+      <div class="result-row"><span>选择题得分</span><span>${choiceOk}×3 = ${choiceOk*3} 分</span></div>
+      <div class="result-row"><span>判断题得分</span><span>${judgeOk}×2 = ${judgeOk*2} 分</span></div>
+      <div class="result-row" style="border-top:2px solid #e0e0e0;padding-top:10px;margin-top:4px"><strong style="color:#1a237e">总分</strong><strong style="color:#1a237e">${score} / 150</strong></div>
+      <div class="result-row"><span>用时</span><span>${document.getElementById('timer').textContent}</span></div>
+    `;
+    document.getElementById('resultScreen').scrollIntoView({behavior:'smooth'});
+  },200);
 }
 </script>
 </body>
